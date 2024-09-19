@@ -9,6 +9,8 @@ import java.lang.reflect.Method;
 import java.net.*;
 import java.util.logging.Logger;
 
+import static org.example.CalcReflexFacade.getReqURI;
+
 public class CalcReflexBEServer {
     public static void main(String[] args) throws IOException, URISyntaxException {
         ServerSocket serverSocket = null;
@@ -54,12 +56,22 @@ public class CalcReflexBEServer {
             URI requri = getReqURI(firstLine);
 
             if(requri.getPath().startsWith("/compreflex")){
-                outputLine = "HTTP/1.1 200 OK\r\n"
+
+                String command = requri.getQuery().split("=")[1];
+                try {
+                    String result = computeMathCommand(command);
+                    outputLine = "HTTP/1.1 200 OK\r\n"
                         + "Content-Type: application/json\r\n"
                         + "\r\n"
-                        + "'{\"name\":\"John\", \"age\":30, \"car\":null}'";
+                        + "'{\"result\":\"" + result + "\"}'";
+            }catch (Exception e) {
+                    outputLine = "HTTP/1.1 200 OK\r\n"
+                            + "Content-Type: application/json\r\n"
+                            + "\r\n"
+                            + "{\"error\":\"invalid command\"}";
+                }
             }else {
-                outputLine =getDefaultResponse();
+                outputLine = getDefaultResponse();
             }
 
 
@@ -99,11 +111,15 @@ public class CalcReflexBEServer {
     }
 
     public static String computeMathCommand(String command) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Class c = Math.class;
-        Class[] parameterTypes={double.class};
-        Method m = c.getDeclaredMethod("abs", parameterTypes);
-        Object [] params = {-2.0};
-        String resp = m.invoke(null, (Object) params).toString();
-        return "";
+        String methodName = command.substring(0, command.indexOf('('));
+        String argument = command.substring(command.indexOf('(') + 1, command.indexOf(')'));
+
+        double argValue = Double.parseDouble(argument);
+        Method method = Math.class.getDeclaredMethod(methodName, double.class);
+        Object result = method.invoke(null, argValue);
+
+        return result.toString();
+
+
     }
 }

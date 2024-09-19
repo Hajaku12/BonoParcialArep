@@ -80,9 +80,9 @@ public class CalcReflexFacade {
                 "    </head>\n" +
                 "    <body>\n" +
                 "        <h1>Form with GET</h1>\n" +
-                "        <form action=\"/hello\">\n" +
-                "            <label for=\"name\">Name:</label><br>\n" +
-                "            <input type=\"text\" id=\"comando\" name=\"comando\" value=\"max(1,0,2.0)\"><br><br>\n" +
+                "        <form action=\"/computar\">\n" +
+                "            <label for=\"comando\">Name:</label><br>\n" +
+                "            <input type=\"text\" id=\"comando\" name=\"comando\" value=\"abs(-5.5)\"><br><br>\n" +
                 "            <input type=\"button\" value=\"Submit\" onclick=\"loadGetMsg()\">\n" +
                 "        </form> \n" +
                 "        <div id=\"getrespmsg\"></div>\n" +
@@ -95,7 +95,7 @@ public class CalcReflexFacade {
                 "                    document.getElementById(\"getrespmsg\").innerHTML =\n" +
                 "                    this.responseText;\n" +
                 "                }\n" +
-                "                xhttp.open(\"GET\", \"/computar?comando=\"+nameVar);\n" +
+                "                xhttp.open(\"GET\", \"/computar?comando=\"+comando);\n" +
                 "                xhttp.send();\n" +
                 "            }\n" +
                 "        </script>\n" +
